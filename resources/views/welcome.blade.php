@@ -12,8 +12,11 @@
     <header class="bg-red-600 text-white shadow-lg">
         <div class="container mx-auto px-4 py-4 flex justify-between items-center">
             <h1 class="text-3xl font-bold">Вжух! Пицца</h1>
-            <div class="flex items-center gap-6">
-                <a href="{{ route('login') }}" class="bg-white text-red-600 px-6 py-2 rounded-lg font-bold hover:bg-gray-100">
+            <div class="flex items-center gap-4">
+                <a href="{{ route('register') }}" class="text-white hover:text-gray-200 font-medium">
+                    Регистрация
+                </a>
+                <<a href="{{ route('login') }}" class="bg-white text-red-600 px-6 py-2 rounded-lg font-bold hover:bg-gray-100">
                     Войти
                 </a>
             </div>
