@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Status extends Model
 {
-    public $timestamps = false;
     protected $table = 'Status';
+    
+    protected $fillable = ['name'];
+    
+    public $timestamps = false;
 }

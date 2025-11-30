@@ -33,7 +33,7 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->name('dashboard');
 
-// === Корзина ===
+// === Корзина и заказы ===
 Route::get('/cart', [CartController::class, 'index'])->name('cart');
 Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
 Route::post('/cart/update', [CartController::class, 'update'])->name('cart.update');
@@ -48,3 +48,4 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('/orders', [OrderAdminController::class, 'index'])->name('orders');
     Route::post('/orders/{order}/status', [OrderAdminController::class, 'updateStatus'])->name('orders.status');
 });
+

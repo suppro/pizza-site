@@ -6,14 +6,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class OrderItem extends Model
 {
-    public $timestamps = false;
     protected $table = 'OrderItem';
-
-    public function order()
-    {
-        return $this->belongsTo(Order::class, 'order_id');
-    }
-
+    
+    protected $fillable = [
+        'order_id', 'product_variant_id', 'quantity', 'price_at_moment'
+    ];
+    
+    public $timestamps = false;
+    
     public function variant()
     {
         return $this->belongsTo(ProductVariant::class, 'product_variant_id');
