@@ -44,6 +44,16 @@ class CartController extends Controller
         session(['cart' => $cart]);
         return back();
     }
+    public function clear()
+    {
+    if (!session('user_id')) {
+        return redirect()->route('login');
+    }
+
+    session()->forget('cart');
+    
+    return redirect()->route('cart')->with('success', 'Корзина очищена');
+    }
 
     public function remove($id)
     {
@@ -52,4 +62,6 @@ class CartController extends Controller
         session(['cart' => $cart]);
         return back()->with('success', 'Удалено из корзины');
     }
+
+    
 }
