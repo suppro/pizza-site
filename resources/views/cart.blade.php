@@ -14,6 +14,14 @@
             <div class="flex items-center gap-6">
                 @if(session('user_id'))
                     <span class="hidden md:block">Привет, {{ session('user_name') }}!</span>
+                    
+                    <!-- ЕСЛИ АДМИН - ПОКАЗЫВАЕМ ССЫЛКУ В АДМИНКУ -->
+                    @if(session('user_role') == 1)
+                        <a href="{{ route('admin.dashboard') }}" class="bg-blue-600 text-white px-4 py-2 rounded-lg font-bold hover:bg-blue-700">
+                            Админ-панель
+                        </a>
+                    @endif
+                    
                     <a href="{{ route('cart') }}" class="bg-white text-red-600 px-5 py-2 rounded-lg font-bold hover:bg-gray-100 relative">
                         Корзина
                         @if(session('cart') && collect(session('cart'))->count())
