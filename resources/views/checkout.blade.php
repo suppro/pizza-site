@@ -6,106 +6,103 @@
     <title>Оформление заказа — Вжух! Пицца</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="bg-gray-100 font-sans">
+<body class="bg-gradient-to-br from-gray-50 to-gray-100 font-sans antialiased">
     <!-- Шапка -->
-    <header class="bg-red-600 text-white shadow-lg">
-        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
-            <a href="{{ route('dashboard') }}" class="text-3xl font-bold">Вжух! Пицца</a>
-            <div class="flex items-center gap-6">
+    <header class="bg-gradient-to-r from-red-600 to-red-700 text-white shadow-xl sticky top-0 z-50 backdrop-blur-sm bg-opacity-95">
+        <div class="container mx-auto px-4 py-5 flex justify-between items-center">
+            <a href="{{ route('dashboard') }}" class="text-3xl font-extrabold tracking-tight hover:scale-105 transition-transform duration-200">
+                🍕 Вжух! Пицца
+            </a>
+            <div class="flex items-center gap-4">
                 @if(session('user_id'))
-                    <span class="hidden md:block">Привет, {{ session('user_name') }}!</span>
-                    
-                    <!-- ЕСЛИ АДМИН - ПОКАЗЫВАЕМ ССЫЛКУ В АДМИНКУ -->
-                    @if(session('user_role') == 1)
-                        <a href="{{ route('admin.dashboard') }}" class="bg-blue-600 text-white px-4 py-2 rounded-lg font-bold hover:bg-blue-700">
-                            Админ-панель
-                        </a>
-                    @endif
-                    
-                    <a href="{{ route('cart') }}" class="bg-white text-red-600 px-5 py-2 rounded-lg font-bold hover:bg-gray-100 relative">
-                        Корзина
-                        @if(session('cart') && collect(session('cart'))->count())
-                            <span class="absolute -top-2 -right-2 bg-yellow-400 text-black text-xs rounded-full w-6 h-6 flex items-center justify-center">
-                                {{ collect(session('cart'))->sum('quantity') }}
-                            </span>
-                        @endif
-                    </a>
-                    <a href="{{ route('orders') }}" class="bg-white text-red-600 px-5 py-2 rounded-lg font-bold hover:bg-gray-100">
-                        Мои заказы
+                    <span class="hidden md:block text-yellow-100 font-semibold">Привет, {{ session('user_name') }}! 👋</span>
+                    <a href="{{ route('cart') }}" class="bg-white text-red-600 px-5 py-2.5 rounded-xl font-bold hover:bg-yellow-50 hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200">
+                        🛒 Корзина
                     </a>
                     <form method="POST" action="{{ route('logout') }}" class="inline">
                         @csrf
-                        <button class="bg-white text-red-600 px-5 py-2 rounded-lg font-bold hover:bg-gray-100">Выйти</button>
+                        <button class="bg-white text-red-600 px-5 py-2.5 rounded-xl font-bold hover:bg-yellow-50 hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200">Выйти</button>
                     </form>
-                @else
-                    <a href="{{ route('login') }}" class="bg-white text-red-600 px-6 py-2 rounded-lg font-bold hover:bg-gray-100">
-                        Войти
-                    </a>
                 @endif
             </div>
         </div>
     </header>
 
     <div class="container mx-auto px-4 py-12">
-        <h1 class="text-4xl font-bold mb-8">Оформление заказа</h1>
+        <div class="text-center mb-12">
+            <h1 class="text-5xl font-extrabold text-gray-900 mb-4">Оформление заказа</h1>
+            <div class="w-24 h-1 bg-gradient-to-r from-red-600 to-orange-500 mx-auto rounded-full"></div>
+        </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <!-- Форма заказа -->
-            <div class="bg-white rounded-xl shadow-lg p-6">
-                <h2 class="text-2xl font-bold mb-6">Данные для доставки</h2>
+            <div class="bg-white rounded-2xl shadow-2xl p-8 border border-gray-100">
+                <div class="flex items-center gap-3 mb-8">
+                    <div class="w-12 h-12 bg-gradient-to-r from-red-600 to-orange-600 rounded-xl flex items-center justify-center text-white text-2xl">
+                        📍
+                    </div>
+                    <h2 class="text-3xl font-extrabold text-gray-900">Данные для доставки</h2>
+                </div>
                 
                 <form action="{{ route('order.create') }}" method="POST">
                     @csrf
                     
-                    <div class="space-y-4">
+                    <div class="space-y-6">
                         <div>
-                            <label for="delivery_address" class="block text-sm font-medium text-gray-700">Адрес доставки *</label>
+                            <label for="delivery_address" class="block text-sm font-bold text-gray-700 mb-2">Адрес доставки *</label>
                             <input type="text" id="delivery_address" name="delivery_address" required
-                                   class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-red-500 focus:border-red-500"
+                                   class="block w-full px-4 py-3 border-2 border-gray-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all font-medium"
                                    value="{{ session('user_address') }}"
                                    placeholder="Укажите адрес доставки">
                             @error('delivery_address')
-                                <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+                                <p class="text-sm text-red-600 mt-2 font-semibold">{{ $message }}</p>
                             @enderror
                         </div>
 
                         <div>
-                            <label for="comment" class="block text-sm font-medium text-gray-700">Комментарий к заказу</label>
+                            <label for="comment" class="block text-sm font-bold text-gray-700 mb-2">Комментарий к заказу</label>
                             <textarea id="comment" name="comment" rows="4"
-                                      class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-red-500 focus:border-red-500"
+                                      class="block w-full px-4 py-3 border-2 border-gray-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all font-medium resize-none"
                                       placeholder="Дополнительные пожелания..."></textarea>
                         </div>
                     </div>
 
                     <button type="submit"
-                            class="w-full mt-6 bg-red-600 text-white py-3 px-4 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 font-medium text-lg">
-                        Подтвердить заказ
+                            class="w-full mt-8 bg-gradient-to-r from-red-600 to-orange-600 text-white py-4 px-6 rounded-xl hover:from-red-700 hover:to-orange-700 focus:outline-none focus:ring-4 focus:ring-red-300 font-bold text-lg shadow-lg hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300">
+                        ✅ Подтвердить заказ
                     </button>
                 </form>
             </div>
 
             <!-- Информация о заказе -->
-            <div class="bg-white rounded-xl shadow-lg p-6">
-                <h2 class="text-2xl font-bold mb-6">Ваш заказ</h2>
+            <div class="bg-white rounded-2xl shadow-2xl p-8 border border-gray-100">
+                <div class="flex items-center gap-3 mb-8">
+                    <div class="w-12 h-12 bg-gradient-to-r from-red-600 to-orange-600 rounded-xl flex items-center justify-center text-white text-2xl">
+                        🛒
+                    </div>
+                    <h2 class="text-3xl font-extrabold text-gray-900">Ваш заказ</h2>
+                </div>
                 
-                <div class="space-y-4">
+                <div class="space-y-6">
                     @foreach($cart as $item)
-                    <div class="flex justify-between items-center border-b pb-4">
-                        <div>
-                            <h3 class="font-semibold">{{ $item['variant']->product->name }}</h3>
-                            <p class="text-sm text-gray-600">{{ $item['variant']->size_name }}</p>
-                            <p class="text-sm text-gray-600">Количество: {{ $item['quantity'] }}</p>
+                    <div class="flex justify-between items-start border-b-2 border-gray-100 pb-6 last:border-0">
+                        <div class="flex-1">
+                            <h3 class="font-bold text-lg text-gray-900 mb-1">{{ $item['variant']->product->name }}</h3>
+                            <p class="text-sm text-gray-600 mb-1">
+                                <span class="px-2 py-1 bg-gray-100 rounded-lg font-semibold">{{ $item['variant']->size_name }}</span>
+                            </p>
+                            <p class="text-sm text-gray-600 font-medium">Количество: <span class="font-bold text-red-600">{{ $item['quantity'] }}</span></p>
                         </div>
-                        <div class="text-right">
-                            <p class="font-semibold">{{ $item['variant']->price * $item['quantity'] }} ₽</p>
+                        <div class="text-right ml-4">
+                            <p class="font-extrabold text-xl text-gray-900">{{ $item['variant']->price * $item['quantity'] }} ₽</p>
                         </div>
                     </div>
                     @endforeach
                     
-                    <div class="border-t pt-4">
-                        <div class="flex justify-between text-xl font-bold">
-                            <span>Итого:</span>
-                            <span>{{ $total }} ₽</span>
+                    <div class="border-t-2 border-gray-200 pt-6 mt-6">
+                        <div class="flex justify-between items-center">
+                            <span class="text-2xl font-bold text-gray-700">Итого:</span>
+                            <span class="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-orange-600">{{ $total }} ₽</span>
                         </div>
                     </div>
                 </div>
