@@ -29,18 +29,18 @@
     }
     
     ::-webkit-scrollbar-thumb {
-        @apply bg-gradient-to-b from-red-500 to-orange-500 rounded-full;
+        @apply bg-gradient-to-b from-blue-500 to-indigo-500 rounded-full;
     }
     
     ::-webkit-scrollbar-thumb:hover {
-        @apply from-red-600 to-orange-600;
+        @apply from-blue-600 to-indigo-600;
     }
     
     /* Улучшенный фокус для доступности */
     input:focus,
     textarea:focus,
     select:focus {
-        @apply ring-2 ring-red-500 ring-offset-2;
+        @apply ring-2 ring-blue-500 ring-offset-2;
     }
     
     /* Анимация появления */

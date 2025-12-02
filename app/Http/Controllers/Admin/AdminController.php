@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Models\User;
+use App\Notifications\OrderStatusChanged;
+use App\Services\OneCService;
 use Illuminate\Http\Request;
 
 class AdminController extends Controller
@@ -74,7 +76,7 @@ class AdminController extends Controller
         return view('admin.orders', compact('orders', 'statuses'));
     }
 
-    public function updateOrderStatus(Request $request, $orderId)
+    public function updateOrderStatus(Request $request, $orderId, OneCService $oneCService)
     {
         $user = auth()->user();
         if (!$user || !$user->isAdmin()) {
@@ -86,10 +88,53 @@ class AdminController extends Controller
         ]);
 
         $order = Order::findOrFail($orderId);
-        $oldStatus = $this->getStatusLabel($order->status);
-        $order->update(['status' => $request->status]);
+        $oldStatus = $order->status;
+        $newStatus = $request->status;
+        
+        $order->update(['status' => $newStatus]);
 
-        return back()->with('success', "Статус заказа #{$orderId} изменен с '{$oldStatus}' на '{$this->getStatusLabel($order->status)}'");
+        // Отправляем уведомление клиенту, если есть email
+        if ($order->user) {
+            // Если заказ привязан к пользователю
+            try {
+                $order->user->notify(new OrderStatusChanged($order, $oldStatus, $newStatus));
+            } catch (\Exception $e) {
+                // Логируем ошибку, но не прерываем выполнение
+                \Log::error('Ошибка отправки уведомления: ' . $e->getMessage());
+            }
+        } else {
+            // Для гостевых заказов пытаемся отправить на email из customer_details
+            $customerDetails = $order->customer_details;
+            if (isset($customerDetails['email']) && !empty($customerDetails['email'])) {
+                try {
+                    // Создаем временного пользователя для отправки уведомления
+                    $tempUser = new User();
+                    $tempUser->email = $customerDetails['email'];
+                    $tempUser->name = $customerDetails['name'] ?? 'Клиент';
+                    $tempUser->notify(new OrderStatusChanged($order, $oldStatus, $newStatus));
+                } catch (\Exception $e) {
+                    \Log::error('Ошибка отправки уведомления гостю: ' . $e->getMessage());
+                }
+            }
+        }
+
+        // Автоматическая выгрузка в 1С при изменении статуса на "в обработке" или "новый"
+        if (in_array($newStatus, ['new', 'processing']) && !$order->is_synced_to_1c) {
+            try {
+                $oneCService->exportOrder($order);
+            } catch (\Exception $e) {
+                // Логируем ошибку, но не прерываем процесс
+                \Log::error('Failed to auto-export order to 1C', [
+                    'order_id' => $order->id,
+                    'error' => $e->getMessage()
+                ]);
+            }
+        }
+
+        $oldStatusLabel = $this->getStatusLabel($oldStatus);
+        $newStatusLabel = $this->getStatusLabel($newStatus);
+
+        return back()->with('success', "Статус заказа #{$orderId} изменен с '{$oldStatusLabel}' на '{$newStatusLabel}'. Уведомление отправлено клиенту.");
     }
 
     public function orderDetail($id)

@@ -57,8 +57,21 @@
                 <h3 class="text-4xl font-bold mb-10 text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">
                     {{ $category->name }}
                 </h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    @foreach(\App\Models\Product::where('category_id', $category->id)->where('is_active', true)->inStock()->get() as $product)
+                @php
+                    // Получаем ID всех подкатегорий
+                    $categoryIds = [$category->id];
+                    foreach ($category->children as $child) {
+                        $categoryIds[] = $child->id;
+                    }
+                    
+                    $categoryProducts = \App\Models\Product::whereIn('category_id', $categoryIds)
+                        ->where('is_active', true)
+                        ->with('mainImage')
+                        ->get();
+                @endphp
+                @if($categoryProducts->count() > 0)
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        @foreach($categoryProducts as $product)
                         <div class="group bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100">
                             <div class="relative overflow-hidden">
                                 @if($product->mainImage)
@@ -90,8 +103,13 @@
                                 </div>
                             </div>
                         </div>
-                    @endforeach
-                </div>
+                        @endforeach
+                    </div>
+                @else
+                    <div class="bg-gray-50 rounded-xl p-8 text-center">
+                        <p class="text-gray-500 text-lg">В этой категории пока нет товаров</p>
+                    </div>
+                @endif
             </section>
         @endforeach
 

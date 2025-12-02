@@ -24,11 +24,24 @@
     </div>
 
     <div class="p-6">
-        <h4 class="text-2xl font-bold mb-2 text-gray-900 group-hover:text-blue-600 transition-colors">{{ $product->name }}</h4>
+        <a href="{{ route('product.show', $product->slug) }}" class="block">
+            <h4 class="text-2xl font-bold mb-2 text-gray-900 group-hover:text-blue-600 transition-colors">{{ $product->name }}</h4>
+        </a>
         @if($product->sku)
-            <p class="text-sm text-gray-500 mb-3">Артикул: <strong>{{ $product->sku }}</strong></p>
+            <p class="text-sm text-gray-500 mb-3">Артикул: <strong class="font-mono">{{ $product->sku }}</strong></p>
         @endif
         <p class="text-gray-600 mb-4 leading-relaxed">{{ Str::limit($product->description, 100) }}</p>
+        
+        @if($product->technical_specs && count($product->technical_specs) > 0)
+            <div class="mb-4">
+                <p class="text-xs text-gray-500 mb-2">Основные характеристики:</p>
+                <div class="flex flex-wrap gap-2">
+                    @foreach(array_slice($product->technical_specs, 0, 2) as $key => $value)
+                        <span class="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded">{{ $key }}: {{ $value }}</span>
+                    @endforeach
+                </div>
+            </div>
+        @endif
 
         @if($product->stock_quantity > 0)
             <form action="{{ route('cart.add') }}" method="POST" class="space-y-4">

@@ -1,59 +1,432 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Интернет-магазин АО «Арвиай»
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Современный интернет-магазин для оптово-розничной продажи авиационных запчастей, комплектующих и сопутствующего оборудования с интеграцией с системой 1С:Предприятие.
 
-## About Laravel
+## 🚀 Возможности
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- **Каталог товаров** с иерархической структурой категорий
+- **Интеллектуальный поиск** по названию, артикулу и описанию
+- **Система фильтрации** по категориям, цене и наличию
+- **Корзина покупок** с управлением количеством товаров
+- **Трехшаговое оформление заказа** с валидацией данных
+- **Личный кабинет клиента** с историей заказов
+- **Административная панель** для управления товарами, категориями, заказами и пользователями
+- **Интеграция с 1С:Предприятие** для автоматической выгрузки заказов
+- **Email-уведомления** об изменении статуса заказа
+- **Адаптивный дизайн** для всех типов устройств
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 📋 Требования
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- PHP >= 8.1
+- Composer
+- MySQL >= 5.7 или MariaDB >= 10.3
+- Node.js >= 16.x и npm
+- Git
 
-## Learning Laravel
+## 🔧 Установка
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+### 1. Клонирование репозитория
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+```bash
+git clone https://github.com/your-username/arviay-shop.git
+cd arviay-shop
+```
 
-## Laravel Sponsors
+### 2. Установка зависимостей PHP
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+```bash
+composer install
+```
 
-### Premium Partners
+### 3. Установка зависимостей Node.js
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+```bash
+npm install
+```
 
-## Contributing
+### 4. Настройка окружения
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Скопируйте файл `.env.example` в `.env`:
 
-## Code of Conduct
+```bash
+cp .env.example .env
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Откройте файл `.env` и настройте следующие параметры:
 
-## Security Vulnerabilities
+```env
+APP_NAME="АО «Арвиай»"
+APP_ENV=local
+APP_KEY=
+APP_DEBUG=true
+APP_URL=http://localhost:8000
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=arviay_shop
+DB_USERNAME=your_username
+DB_PASSWORD=your_password
+```
 
-## License
+### 5. Генерация ключа приложения
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+```bash
+php artisan key:generate
+```
+
+### 6. Создание базы данных
+
+Создайте базу данных MySQL:
+
+```sql
+CREATE DATABASE arviay_shop CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+```
+
+### 7. Выполнение миграций
+
+```bash
+php artisan migrate
+```
+
+### 8. Заполнение базы данных тестовыми данными
+
+```bash
+php artisan db:seed
+```
+
+Это создаст:
+- Администратора (email: `admin@arviay.ru`, пароль: `password`)
+- Тестового клиента (email: `client@arviay.ru`, пароль: `password`)
+- Категории товаров
+- Товары с изображениями
+
+### 9. Создание символической ссылки для хранения
+
+```bash
+php artisan storage:link
+```
+
+Это необходимо для доступа к загруженным изображениям товаров.
+
+### 10. Сборка фронтенд-ресурсов
+
+Для разработки (с hot-reload):
+
+```bash
+npm run dev
+```
+
+Для продакшена:
+
+```bash
+npm run build
+```
+
+### 11. Запуск сервера разработки
+
+В отдельном терминале:
+
+```bash
+php artisan serve
+```
+
+Приложение будет доступно по адресу: `http://localhost:8000`
+
+## 👤 Учетные записи по умолчанию
+
+После выполнения `php artisan db:seed` будут созданы следующие учетные записи:
+
+### Администратор
+- **Email:** `admin@arviay.ru`
+- **Пароль:** `admin123`
+- **Роль:** Администратор
+- **Доступ:** Полный доступ к административной панели
+
+### Клиент
+- **Email:** `client@arviay.ru`
+- **Пароль:** `client123`
+- **Роль:** Клиент
+- **Доступ:** Каталог товаров, корзина, оформление заказов
+
+⚠️ **Важно:** После первого входа обязательно измените пароли на более надежные!
+
+## ⚙️ Настройка интеграции с 1С
+
+Для настройки интеграции с системой 1С:Предприятие добавьте в файл `.env` следующие параметры:
+
+```env
+ONEC_ENABLED=true
+ONEC_BASE_URL=http://your-1c-server:port
+ONEC_USERNAME=your_username
+ONEC_PASSWORD=your_password
+```
+
+**Примечание:** Если интеграция с 1С не требуется на этапе разработки, установите `ONEC_ENABLED=false`.
+
+### Ручная синхронизация заказов с 1С
+
+Для ручной выгрузки всех невыгруженных заказов в 1С используйте команду:
+
+```bash
+php artisan 1c:sync-orders
+```
+
+Для выгрузки конкретного заказа:
+
+```bash
+php artisan 1c:sync-orders --order-id=123
+```
+
+## 📧 Настройка email-уведомлений
+
+Для отправки email-уведомлений об изменении статуса заказа настройте SMTP в файле `.env`:
+
+```env
+MAIL_MAILER=smtp
+MAIL_HOST=smtp.mailtrap.io
+MAIL_PORT=2525
+MAIL_USERNAME=your_username
+MAIL_PASSWORD=your_password
+MAIL_ENCRYPTION=tls
+MAIL_FROM_ADDRESS=noreply@arviay.ru
+MAIL_FROM_NAME="${APP_NAME}"
+```
+
+Для тестирования можно использовать [Mailtrap](https://mailtrap.io/) или [MailHog](https://github.com/mailhog/MailHog).
+
+## 📁 Структура проекта
+
+```
+arviay-shop/
+├── app/
+│   ├── Http/
+│   │   └── Controllers/
+│   │       ├── Admin/          # Контроллеры административной панели
+│   │       ├── Auth/           # Контроллеры аутентификации
+│   │       ├── CartController.php
+│   │       ├── CatalogController.php
+│   │       ├── OrderController.php
+│   │       └── ProductController.php
+│   ├── Models/                 # Eloquent модели
+│   ├── Services/
+│   │   └── OneCService.php     # Сервис интеграции с 1С
+│   ├── Helpers/
+│   │   └── OrderHelper.php     # Вспомогательные функции
+│   └── Notifications/
+│       └── OrderStatusChanged.php
+├── database/
+│   ├── migrations/             # Миграции базы данных
+│   └── seeders/                # Сидеры для заполнения данных
+├── resources/
+│   ├── views/                  # Blade шаблоны
+│   │   ├── admin/              # Шаблоны административной панели
+│   │   ├── auth/               # Шаблоны авторизации
+│   │   └── partials/           # Частичные шаблоны
+│   ├── css/
+│   │   └── app.css             # Основные стили
+│   └── js/
+│       └── app.js              # JavaScript файлы
+├── routes/
+│   └── web.php                 # Веб-маршруты
+└── storage/
+    └── app/
+        └── public/
+            └── product_images/ # Загруженные изображения товаров
+```
+
+## 🗄️ База данных
+
+### Основные таблицы
+
+- `users` - Пользователи системы (администраторы и клиенты)
+- `categories` - Иерархическая структура категорий товаров
+- `products` - Товары с техническими характеристиками
+- `product_images` - Изображения товаров
+- `orders` - Заказы клиентов
+- `order_items` - Позиции заказов
+
+### Миграции
+
+Все миграции находятся в директории `database/migrations/`. Для отката последней миграции:
+
+```bash
+php artisan migrate:rollback
+```
+
+Для отката всех миграций:
+
+```bash
+php artisan migrate:reset
+```
+
+## 🎨 Разработка
+
+### Запуск в режиме разработки
+
+1. Запустите сборку фронтенд-ресурсов в watch-режиме:
+
+```bash
+npm run dev
+```
+
+2. В другом терминале запустите сервер разработки:
+
+```bash
+php artisan serve
+```
+
+### Очистка кэша
+
+При возникновении проблем с кэшем выполните:
+
+```bash
+php artisan cache:clear
+php artisan config:clear
+php artisan route:clear
+php artisan view:clear
+```
+
+### Режим отладки
+
+Для включения подробных сообщений об ошибках установите в `.env`:
+
+```env
+APP_DEBUG=true
+```
+
+⚠️ **Важно:** В продакшене всегда устанавливайте `APP_DEBUG=false`!
+
+## 🚀 Развертывание в продакшене
+
+### 1. Оптимизация для продакшена
+
+```bash
+composer install --optimize-autoloader --no-dev
+npm run build
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
+```
+
+### 2. Настройка веб-сервера
+
+Настройте веб-сервер (Nginx или Apache) для работы с Laravel. Пример конфигурации Nginx:
+
+```nginx
+server {
+    listen 80;
+    server_name your-domain.com;
+    root /path/to/arviay-shop/public;
+
+    add_header X-Frame-Options "SAMEORIGIN";
+    add_header X-Content-Type-Options "nosniff";
+
+    index index.php;
+
+    charset utf-8;
+
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+    location = /favicon.ico { access_log off; log_not_found off; }
+    location = /robots.txt  { access_log off; log_not_found off; }
+
+    error_page 404 /index.php;
+
+    location ~ \.php$ {
+        fastcgi_pass unix:/var/run/php/php8.1-fpm.sock;
+        fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
+        include fastcgi_params;
+    }
+
+    location ~ /\.(?!well-known).* {
+        deny all;
+    }
+}
+```
+
+### 3. Права доступа
+
+Установите правильные права доступа:
+
+```bash
+chmod -R 755 storage bootstrap/cache
+chown -R www-data:www-data storage bootstrap/cache
+```
+
+### 4. Переменные окружения
+
+Убедитесь, что в `.env` установлены правильные значения для продакшена:
+
+```env
+APP_ENV=production
+APP_DEBUG=false
+APP_URL=https://your-domain.com
+```
+
+## 📝 Команды Artisan
+
+### Управление заказами
+
+```bash
+# Синхронизация заказов с 1С
+php artisan 1c:sync-orders
+
+# Синхронизация конкретного заказа
+php artisan 1c:sync-orders --order-id=123
+```
+
+### Работа с базой данных
+
+```bash
+# Выполнение миграций
+php artisan migrate
+
+# Откат последней миграции
+php artisan migrate:rollback
+
+# Заполнение базы данных
+php artisan db:seed
+
+# Выполнение миграций и заполнение данных
+php artisan migrate --seed
+```
+
+## 🐛 Решение проблем
+
+### Проблема: Изображения товаров не отображаются
+
+**Решение:**
+1. Убедитесь, что выполнена команда `php artisan storage:link`
+2. Проверьте права доступа к директории `storage/app/public/product_images`
+3. Убедитесь, что изображения загружены в правильную директорию
+
+### Проблема: Ошибка "This password does not use the Bcrypt algorithm"
+
+**Решение:**
+Выполните SQL-скрипт для обновления паролей (см. файл `docs/project/reset_passwords.sql`) или создайте новых пользователей через административную панель.
+
+### Проблема: Ошибка при интеграции с 1С
+
+**Решение:**
+1. Проверьте настройки в `.env` (ONEC_ENABLED, ONEC_BASE_URL, ONEC_USERNAME, ONEC_PASSWORD)
+2. Убедитесь, что сервер 1С доступен по указанному адресу
+3. Проверьте логи в `storage/logs/laravel.log`
+
+### Проблема: Email-уведомления не отправляются
+
+**Решение:**
+1. Проверьте настройки SMTP в `.env`
+2. Убедитесь, что очередь обрабатывается: `php artisan queue:work`
+3. Проверьте логи в `storage/logs/laravel.log`
+
+## 📚 Дополнительная документация
+
+- [Руководство по настройке](docs/project/SETUP.md)
+- [Руководство по миграции](docs/project/MIGRATION_GUIDE.md)
+- [Интеграция с 1С](docs/project/ONEC_INTEGRATION.md)
+- [Настройка email](docs/project/EMAIL_SETUP.md)
+- [Список изменений](docs/project/CHANGELOG.md)
+- [Реализованные функции](docs/project/FEATURES_IMPLEMENTED.md)

@@ -16,6 +16,11 @@
             <div class="flex items-center gap-4">
                 @auth
                     <span class="hidden md:block text-blue-100 font-semibold">Привет, {{ auth()->user()->name }}! 👋</span>
+                    @if(auth()->user()->isAdmin())
+                        <a href="{{ route('admin.dashboard') }}" class="bg-blue-500 text-white px-4 py-2.5 rounded-xl font-bold hover:bg-blue-600 hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200">
+                            Админ-панель
+                        </a>
+                    @endif
                     <a href="{{ route('cart') }}" class="bg-white text-blue-600 px-5 py-2.5 rounded-xl font-bold hover:bg-blue-50 hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200">
                         🛒 Корзина
                     </a>

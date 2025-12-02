@@ -11,6 +11,12 @@ class OrderController extends Controller
 {
     public function checkout()
     {
+        // Редирект на первый шаг
+        return redirect()->route('checkout.step1');
+    }
+
+    public function step1()
+    {
         if (!auth()->check()) {
             return redirect()->route('login');
         }
@@ -30,7 +36,84 @@ class OrderController extends Controller
             $total += $product->price * $item['quantity'];
         }
 
-        return view('checkout', compact('cart', 'total'));
+        return view('checkout-step1', compact('cart', 'total'));
+    }
+
+    public function step2(Request $request)
+    {
+        if (!auth()->check()) {
+            return redirect()->route('login');
+        }
+
+        $request->validate([
+            'customer_name' => 'required|string|max:255',
+            'customer_phone' => 'required|string|max:20',
+            'customer_email' => 'nullable|email|max:255',
+        ]);
+
+        $cart = session('cart', []);
+        if (empty($cart)) {
+            return redirect()->route('cart')->with('error', 'Корзина пуста');
+        }
+
+        $total = 0;
+        foreach ($cart as $item) {
+            $total += $item['product']->price * $item['quantity'];
+        }
+
+        // Сохраняем данные клиента в сессии
+        session(['checkout.customer' => [
+            'name' => $request->customer_name,
+            'phone' => $request->customer_phone,
+            'email' => $request->customer_email,
+        ]]);
+
+        return view('checkout-step2', [
+            'cart' => $cart,
+            'total' => $total,
+            'customerData' => session('checkout.customer')
+        ]);
+    }
+
+    public function step3(Request $request)
+    {
+        if (!auth()->check()) {
+            return redirect()->route('login');
+        }
+
+        $request->validate([
+            'delivery_address' => 'required|string|max:500',
+            'delivery_method' => 'required|in:pickup,courier,transport,express_delivery,standard_delivery',
+            'payment_method' => 'required|in:cash,card,transfer,cash_on_delivery,credit_card,bank_transfer',
+            'comment' => 'nullable|string|max:1000',
+        ]);
+
+        $cart = session('cart', []);
+        $customerData = session('checkout.customer');
+        
+        if (empty($cart) || empty($customerData)) {
+            return redirect()->route('checkout.step1')->with('error', 'Сессия истекла. Начните оформление заново.');
+        }
+
+        $total = 0;
+        foreach ($cart as $item) {
+            $total += $item['product']->price * $item['quantity'];
+        }
+
+        // Сохраняем данные доставки в сессии
+        session(['checkout.delivery' => [
+            'address' => $request->delivery_address,
+            'method' => $request->delivery_method,
+            'payment' => $request->payment_method,
+            'comment' => $request->comment,
+        ]]);
+
+        return view('checkout-step3', [
+            'cart' => $cart,
+            'total' => $total,
+            'customerData' => $customerData,
+            'deliveryData' => session('checkout.delivery')
+        ]);
     }
 
     public function store(Request $request)
@@ -44,18 +127,17 @@ class OrderController extends Controller
             return redirect()->route('cart')->with('error', 'Корзина пуста');
         }
 
-        $request->validate([
-            'customer_name' => 'required|string|max:255',
-            'customer_phone' => 'required|string|max:20',
-            'delivery_address' => 'required|string|max:500',
-            'payment_method' => 'required|in:cash,card,transfer,cash_on_delivery,credit_card,bank_transfer',
-            'delivery_method' => 'required|in:pickup,courier,transport,express_delivery,standard_delivery',
-            'comment' => 'nullable|string|max:1000'
-        ]);
+        // Получаем данные из сессии (валидация уже выполнена на шагах 1-3)
+        $customerData = session('checkout.customer');
+        $deliveryData = session('checkout.delivery');
+        
+        if (empty($customerData) || empty($deliveryData)) {
+            return redirect()->route('checkout.step1')->with('error', 'Сессия истекла. Начните оформление заново.');
+        }
         
         // Нормализуем значения для сохранения в новом формате
-        $paymentMethod = \App\Helpers\OrderHelper::normalizePaymentMethod($request->payment_method);
-        $deliveryMethod = \App\Helpers\OrderHelper::normalizeDeliveryMethod($request->delivery_method);
+        $paymentMethod = \App\Helpers\OrderHelper::normalizePaymentMethod($deliveryData['payment']);
+        $deliveryMethod = \App\Helpers\OrderHelper::normalizeDeliveryMethod($deliveryData['method']);
 
         // Проверяем наличие товаров и считаем сумму
         $totalAmount = 0;
@@ -82,15 +164,20 @@ class OrderController extends Controller
             ];
         }
 
+
         // Формируем customer_details
         $customerDetails = [
-            'name' => $request->customer_name,
-            'phone' => $request->customer_phone,
-            'address' => $request->delivery_address,
+            'name' => $customerData['name'],
+            'phone' => $customerData['phone'],
+            'address' => $deliveryData['address'],
         ];
         
-        if ($request->comment) {
-            $customerDetails['comment'] = $request->comment;
+        if (!empty($customerData['email'])) {
+            $customerDetails['email'] = $customerData['email'];
+        }
+        
+        if (!empty($deliveryData['comment'])) {
+            $customerDetails['comment'] = $deliveryData['comment'];
         }
 
         // Создаем заказ
@@ -120,8 +207,10 @@ class OrderController extends Controller
             $product->decrement('stock_quantity', $itemData['quantity']);
         }
 
-        // Очищаем корзину
+        // Очищаем корзину и данные оформления
         session()->forget('cart');
+        session()->forget('checkout.customer');
+        session()->forget('checkout.delivery');
 
         return redirect()->route('orders')->with('success', 'Заказ успешно создан! Номер вашего заказа: #' . $order->id);
     }

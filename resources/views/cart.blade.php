@@ -16,6 +16,11 @@
             <div class="flex items-center gap-4">
                 @auth
                     <span class="hidden md:block text-blue-100 font-semibold">Привет, {{ auth()->user()->name }}! 👋</span>
+                    @if(auth()->user()->isAdmin())
+                        <a href="{{ route('admin.dashboard') }}" class="bg-blue-500 text-white px-4 py-2.5 rounded-xl font-bold hover:bg-blue-600 hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200">
+                            Админ-панель
+                        </a>
+                    @endif
                     <a href="{{ route('cart') }}" class="bg-white text-blue-600 px-5 py-2.5 rounded-xl font-bold hover:bg-blue-50 hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200 relative">
                         🛒 Корзина
                         @if(session('cart') && collect(session('cart'))->count())
@@ -141,7 +146,7 @@
                             <div class="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 mb-6">
                                 Итого: {{ number_format(collect(session('cart'))->sum(fn($i) => $i['product']->price * $i['quantity']), 0, ',', ' ') }} ₽
                             </div>
-                            <a href="{{ route('checkout') }}" 
+                            <a href="{{ route('checkout.step1') }}" 
                                class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-10 py-4 rounded-2xl text-xl font-bold hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-blue-300 shadow-lg hover:shadow-2xl transform hover:-translate-y-1 inline-flex items-center gap-3">
                                 Оформить заказ 
                                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">

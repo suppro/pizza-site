@@ -35,4 +35,11 @@ return [
         ],
     ],
 
+    'onec' => [
+        'enabled' => env('ONEC_ENABLED', false),
+        'base_url' => env('ONEC_BASE_URL', 'http://localhost:8080'),
+        'username' => env('ONEC_USERNAME', ''),
+        'password' => env('ONEC_PASSWORD', ''),
+    ],
+
 ];
